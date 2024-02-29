@@ -1,0 +1,21 @@
+
+USE checkpointgomycode;
+Create Table customer(
+customer_id INT primary key,
+name varchar(30),
+address varchar(30),
+);
+
+create table product(
+product_id Int primary key,
+name varchar(30),
+price float check (price>0),
+);
+
+create table "order" (
+order_id Int primary key,
+customer_id Int foreign key references customer(customer_id),
+product_id Int foreign key references product(product_id),
+quantity Int,
+order_date Date
+);
