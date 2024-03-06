@@ -1,0 +1,59 @@
+create database mactar2024
+
+use mactar2024
+
+Create Table customer(
+customer_id INT primary key,
+name varchar(30),
+address varchar(30),
+);
+
+select * from customer
+
+//insertion de valeurs numerique dans la table customer;
+
+insert into customer values (1,'Ahmed','tunusia'), (2,'Coulibaly','Senegal'), (3,'hassan','Egypt') 
+
+select* from customer
+
+create table product(
+product_id Int primary key,
+name varchar(30),
+price float check (price>0),
+);
+insert into product values (1,'cookies',10),(2,'candy',5.2)
+
+select * from product
+
+create table "order" (
+customer_id Int foreign key references customer(customer_id),
+product_id Int foreign key references product(product_id),
+quantity Int,
+order_date Date
+);
+
+insert into "order" values (1,2,3,'2023-01-22')
+insert into "order" values (2,1,10,'2023-04-14') 
+Select * from "order"
+
+//--Update the quantity of the second order, the new value should be 6;
+
+Select * from "order"
+update "order"
+set quantity=6
+where customer_id = 1
+
+select * from "order"
+
+//--Delete the third customer from the customers table
+
+select * from customer 
+
+delete from customer 
+where customer_id = 3
+
+//--Delete the orders table content then drop the table
+
+
+Truncate table "order" 
+select * from "order"
