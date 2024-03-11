@@ -1,0 +1,102 @@
+ 1. Convert the entity relationship diagram into relational model.
+
+CREATE TABLE wine(
+wine_id VARCHAR PRIMARY KEY,
+category VARCHAR(20) NOT NULL,
+year DATE NOT NULL,
+degree INT
+);
+SELECT * FROM wine;
+
+INSERT INTO wine(wine_id, category, year,degree)
+VALUES(
+'W001', 'white wine', '2012/02/13', '21'),
+('W002', 'sparkling wine', '2010/07/04', '3'),
+('W003',  'rose wine', '2013/09/07', '13'),
+('W004', 'dessert wine', '2014/03/23', '15'),
+('W005', 'fortified wine', '2012/08/12', '22'),
+('W006', 'red wine', '2015/09/14', '10'),
+('W007', 'fruit wine',  '2022/04/08', '12'),
+('W008', 'white wine', '2022/06/05', '11'),
+('W009', 'sparkling wine', '2021/03/02', '10'),
+('W010', 'rose wine', '2011/02/07',  '12'),
+('W011', 'dessert wine', '2021/08/22', '10'),
+('W012',  'red wine', '2022/07/23', '14'),
+('W013', 'fruit wine', '2012/05/16', '13'),
+('W014', 'red wine', '2013/07/22', '12');
+SELECT * FROM  wine;
+
+
+CREATE TABLE producer(
+producer_id VARCHAR PRIMARY KEY,
+first_name VARCHAR(20) NOT NULL,
+last_name  VARCHAR(20) NOT NULL,
+region VARCHAR(20) NOT NULL
+);
+SELECT * FROM producer;
+
+INSERT INTO producer(producer_id, first_name, last_name, region)
+VALUES(
+'P20', 'Mike', 'Nelson', 'Sousse'),
+('P21', 'john', 'Bull', 'Nigeria'),
+('P22',  'Grace', 'Christy', 'Cairo'),
+('P23', 'Emmanuel', 'Jude', 'Kansas'),
+('P24',  'George', 'Miller', 'Jordan'),
+('P25', 'John', 'Comfort', 'Nigeria'),
+('P26', 'Daniel', 'John', 'USA');
+
+SELECT * FROM producer;
+
+CREATE TABLE harvest(
+harvest_id INT PRIMARY KEY,
+wine_id VARCHAR,
+producer_id VARCHAR,
+quantity INT,
+FOREIGN KEY (wine_id) REFERENCES wine(wine_id),
+FOREIGN KEY (producer_id) REFERENCES producer(producer_id)
+);
+SELECT *FROM  harvest;
+
+INSERT INTO harvest(harvest_id, wine_id, producer_id, quantity)
+VALUES(
+'201', 'W010', 'P20', '250'),
+('300', 'W003', 'P24', '300'),
+('301', 'W012', 'P22', '350'),
+('321', 'W014', 'P26', '300'),
+('310', 'W001', 'P21', '400'),
+('333', 'W011', 'P23', '250'),
+('222', 'W008', 'P25', '300');
+SELECT * FROM harvest;
+
+-- Q.2 Give the list of the producers
+SELECT * FROM  producer;
+
+-- Q3. Give the list of producers sorted by name.
+SELECT  first_name, last_name FROM producer;
+
+-- Q4.  Give the list the producers of Sousse.
+SELECT *  FROM  producer
+WHERE region = 'Sousse';
+
+-- Q5. Calculate the total quantity of wine produced having the number 12.
+SELECT  wine_id, count(*)  FROM wine
+WHERE wine_id= 'W012'
+GROUP  BY wine_id;
+
+-- Q6. Calculate the quantity of wine produced by category.
+SELECT category, COUNT(*) AS "quantity of category" FROM wine
+GROUP BY category;
+
+-- Q7. Which producers in the Sousse region have harvested at least one wine in quantities greater than 300 liters? We want the names and first names of the producers, sorted in alphabetical order.
+SELECT first_name
+FROM producer
+INNER JOIN harvest ON producer.producer_id = harvest.producer_id
+WHERE producer.region = 'Souse'AND harvest.quantity = 300;
+
+
+-- Q8. List the wine numbers that have a degree greater than 12 and that have been produced by producer number 24.
+SELECT wine.wine_id FROM wine INNER 
+JOIN harvest
+ON wine.wine_id = harvest.wine_id
+WHERE wine.degree = 12
+AND harvest.producer_id = 'P024';
