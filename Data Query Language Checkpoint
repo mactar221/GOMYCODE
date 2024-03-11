@@ -1,0 +1,144 @@
+create database bayefall01
+
+use bayefall01
+
+Create Table customer(
+customer_id INT primary key,
+name varchar(30),
+address varchar(30),
+);
+
+insert into customer values(1,'Alice','123 main st'), (2,'Bob','456 Markert St'), (3,'Charlie','789 Elm St')
+
+create table product(
+product_id Int primary key,
+name varchar(30),
+price float check (price>0),
+);
+select * from product
+
+insert into product values(1,'widget',10.00), (2,'Gadget',20.00), (3,'Dohickey',5.00)
+
+create table "order" (
+order_id Int primary key,
+customer_id Int foreign key references customer(customer_id),
+product_id Int foreign key references product(product_id),
+quantity Int,
+order_date Date
+);
+
+insert into "order" values (1,1,1,10,'2021-01-01')
+select * from "order"
+insert into "order" values(2,1,2,5,'2021-01-02'),
+insert into "order" values(3,2,1,3,'2021-01-03'),
+insert into "order" values(4,2,2,7,'2021-01-04'),
+insert into "order" values(5,3,1,2,'2021-01-05'),
+insert into "order" values(6,3,3,3,'2021-01-06')
+select * from "order"
+
+-- 1.Write a SQL query to retrieve the names of the customers who have placed an order for at least one widget and at least one gadget,
+-- along with the total cost of the widgets and gadgets ordered by each customer. 
+-- The cost of each item should be calculated by multiplying the quantity by the price of the product.
+SELECT 
+    c.customer_name, 
+    SUM(CASE WHEN p.product_name = 'widget' THEN od.quantity * od.price ELSE 0 END) AS widget_cost,
+    SUM(CASE WHEN p.product_name = 'gadget' THEN od.quantity * od.price ELSE 0 END) AS gadget_cost
+FROM 
+    customers c
+    INNER JOIN orders o ON c.customer_id = o.customer_id
+    INNER JOIN order_details od ON o.order_id = od.order_id
+    INNER JOIN products p ON od.product_id = p.product_id
+WHERE 
+    p.product_name IN ('widget', 'gadget')
+GROUP BY 
+    c.customer_name
+HAVING 
+    SUM(CASE WHEN p.product_name = 'widget' THEN 1 ELSE 0 END) >= 1 
+    AND SUM(CASE WHEN p.product_name = 'gadget' THEN 1 ELSE 0 END) >= 1;
+
+   2. # Write a query to retrieve the names of the customers who have placed an order for at least one widget,
+    # along with the total cost of the widgets ordered by each customer.
+    SELECT 
+    c.customer_name, 
+    SUM(od.quantity * od.price) AS widget_cost
+FROM 
+    customers c
+    INNER JOIN orders o ON c.customer_id = o.customer_id
+    INNER JOIN order_details od ON o.order_id = od.order_id
+    INNER JOIN products p ON od.product_id = p.product_id
+WHERE 
+    p.product_name = 'widget'
+GROUP BY 
+    c.customer_name
+HAVING 
+    SUM(CASE WHEN p.product_name = 'widget' THEN 1 ELSE 0 END) >= 1;
+
+-- 3.# Write a query to retrieve the names of the customers who have placed an order for at least one gadget, 
+-- # along with the total cost of the gadgets ordered by each customer.
+
+SELECT c.CustomerName, SUM(od.UnitPrice * od.Quantity) AS TotalCost
+FROM Customers c
+JOIN Orders o ON c.CustomerID = o.CustomerID
+JOIN OrderDetails od ON o.OrderID = od.OrderID
+WHERE od.ProductID IN (SELECT ProductID FROM Products WHERE CategoryID = 5)
+GROUP BY c.CustomerName
+HAVING SUM(od.Quantity) > 0
+
+-- 4.#Write a query to retrieve the names of the customers who have placed an order for at least one doohickey,
+-- #  along with the total cost of the doohickeys ordered by each customer.
+
+SELECT c.CustomerName, SUM(od.UnitPrice * od.Quantity) AS TotalCost
+FROM Customers c
+JOIN Orders o ON c.CustomerID = o.CustomerID
+JOIN OrderDetails od ON o.OrderID = od.OrderID
+WHERE od.ProductID IN (SELECT ProductID FROM Products WHERE ProductName LIKE '%doohickey%')
+GROUP BY c.CustomerName
+HAVING SUM(od.Quantity) > 0
+
+-- # 5.Write a query to retrieve the total number of widgets and gadgets ordered by each customer, along with the total cost of the orders.
+
+SELECT c.CustomerName, 
+       SUM(CASE WHEN p.CategoryID = 1 THEN od.Quantity ELSE 0 END) AS TotalWidgets,
+       SUM(CASE WHEN p.CategoryID = 5 THEN od.Quantity ELSE 0 END) AS TotalGadgets,
+       SUM(od.UnitPrice * od.Quantity) AS TotalCost
+FROM Customers c
+JOIN Orders o ON c.CustomerID = o.CustomerID
+JOIN OrderDetails od ON o.OrderID = od.OrderID
+JOIN Products p ON od.ProductID = p.ProductID
+GROUP BY c.CustomerName
+
+-- 6.# Write a query to retrieve the names of the products that have been ordered by at least one customer,
+-- #  along with the total quantity of each product ordered.
+
+SELECT p.ProductName, SUM(od.Quantity) AS TotalQuantity
+FROM Products p
+JOIN OrderDetails od ON p.ProductID = od.ProductID
+GROUP BY p.ProductName
+HAVING SUM(od.Quantity) > 0
+
+-- 7.# Write a query to retrieve the names of the customers who have placed the most orders, 
+-- # along with the total number of orders placed by each customer.
+
+SELECT c.CustomerName, COUNT(o.OrderID) AS TotalOrders
+FROM Customers c
+JOIN Orders o ON c.CustomerID = o.CustomerID
+GROUP BY c.CustomerName
+ORDER BY TotalOrders DESC
+LIMIT 10
+
+-- 8.# Write a query to retrieve the names of the products that have been ordered the most, along with the total quantity of each product ordered.
+SELECT p.ProductName, SUM(od.Quantity) AS TotalQuantity
+FROM Products p
+JOIN OrderDetails od ON p.ProductID = od.ProductID
+GROUP BY p.ProductName
+ORDER BY TotalQuantity DESC
+LIMIT 10
+
+-- 9.# Write a query to retrieve the names of the customers who have placed an order on every day of the week,
+-- #  along with the total number of orders placed by each customer.
+
+SELECT c.CustomerName, COUNT(DISTINCT o.OrderDate) AS TotalDays
+FROM Customers c
+JOIN Orders o ON c.CustomerID = o.CustomerID
+GROUP BY c.CustomerName
+HAVING TotalDays = 7
