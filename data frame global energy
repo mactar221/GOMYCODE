@@ -1,0 +1,246 @@
+import plotly.graph_objects as go
+
+def plot_world_map_with_slider(column_name):
+    # Initialisation d'une figure Plotly vide
+    fig = go.Figure()
+
+    # Itération sur les années de 2000 à 2020
+    for year in range(2000, 2021):
+        # Filtrage du DataFrame `df` pour l'année en cours
+        filtered_df = df[df['Year'] == year]
+
+        # Création d'une trace Choropleth pour l'année en cours
+        trace = go.Choropleth(
+            locations=filtered_df['Entity'],  # Noms des pays
+            z=filtered_df[column_name],       # Valeurs pour la coloration
+            locationmode='country names',      # Interprétation de 'Entity' comme des noms de pays
+            colorscale='Electric',             # Échelle de couleurs
+            colorbar=dict(title=column_name), # Titre de la barre de couleurs
+            zmin=df[column_name].min(),       # Valeur minimale pour l'échelle de couleurs
+            zmax=df[column_name].max(),       # Valeur maximale pour l'échelle de couleurs
+            visible=False                     # Initialement invisible
+        )
+
+        # Ajout de la trace à la figure
+        fig.add_trace(trace)
+
+    # Définition de la visibilité de la première trace (année 2000) à True
+    fig.data[0].visible = True
+
+    # Création des étapes du slider pour chaque année
+    steps = []
+    for i in range(len(fig.data)):
+        step = dict(
+            method='update',                              # Méthode pour mettre à jour la figure
+            args=[{'visible': [False] * len(fig.data)},   # Définir toutes les traces comme invisibles
+                  {'title_text': f'{column_name} Map - {2000 + i}',  # Mise à jour du titre
+                   'frame': {'duration': 1000, 'redraw': True}}],    # Paramètres d'animation
+            label=str(2000 + i)                           # Libellé de l'étape du slider
+        )
+        step['args'][0]['visible'][i] = True             # Définir la trace actuelle comme visible
+        steps.append(step)
+
+    # Configuration du slider
+    sliders = [dict(
+        active=0,                                         # Étape initialement active
+        steps=steps,                                      # Étapes pour le slider
+        currentvalue={"prefix": "Année : ", "font": {"size": 14}},  # Affichage de la valeur actuelle
+    )]
+
+    # Mise à jour de la mise en page de la figure
+    fig.update_layout(
+        title_text=f'Carte {column_name} avec slider',   # Titre de la figure
+        title_font_size=24,                               # Taille de police du titre
+        title_x=0.5,                                      # Position du titre
+        geo=dict(
+            showframe=True,                               # Afficher le cadre autour de la carte
+            showcoastlines=True,                          # Afficher les côtes
+            projection_type='natural earth'               # Projection de la carte
+        ),
+        sliders=sliders,                                  # Ajouter le slider à la figure
+        height=500,                                       # Hauteur de la figure
+        width=1000,                                       # Largeur de la figure
+        font=dict(family='Arial', size=12),               # Paramètres de police
+        margin=dict(t=80, l=50, r=50, b=50),              # Marges
+    )
+
+    # Affichage de la figure
+    fig.show()
+
+# Exemple d'utilisation
+column_name = 'Accès à l'électricité (% de la population)'
+plot_world_map_with_slider(column_name)
+column_name = 'Part des énergies renouvelables dans la consommation finale d'énergie (%)'
+plot_world_map_with_slider(column_name)
+
+import plotly.graph_objects as go
+
+def plot_world_map_with_slider(column_name):
+    # Initialisation d'une figure Plotly vide
+    fig = go.Figure()
+
+    # Itération sur les années de 2000 à 2020
+    for year in range(2000, 2021):
+        # Filtrage du DataFrame `df` pour l'année en cours
+        filtered_df = df[df['Year'] == year]
+
+        # Création d'une trace Choropleth pour l'année en cours
+        trace = go.Choropleth(
+            locations=filtered_df['Entity'],  # Noms des pays
+            z=filtered_df[column_name],       # Valeurs pour la coloration
+            locationmode='country names',      # Interprétation de 'Entity' comme des noms de pays
+            colorscale='Electric',             # Échelle de couleurs
+            colorbar=dict(title=column_name), # Titre de la barre de couleurs
+            zmin=df[column_name].min(),       # Valeur minimale pour l'échelle de couleurs
+            zmax=df[column_name].max(),       # Valeur maximale pour l'échelle de couleurs
+            visible=False                     # Initialement invisible
+        )
+
+        # Ajout de la trace à la figure
+        fig.add_trace(trace)
+
+    # Définition de la visibilité de la première trace (année 2000) à True
+    fig.data[0].visible = True
+
+    # Création des étapes du slider pour chaque année
+    steps = []
+    for i in range(len(fig.data)):
+        step = dict(
+            method='update',                              # Méthode pour mettre à jour la figure
+            args=[{'visible': [False] * len(fig.data)},   # Définir toutes les traces comme invisibles
+                  {'title_text': f'{column_name} Map - {2000 + i}',  # Mise à jour du titre
+                   'frame': {'duration': 1000, 'redraw': True}}],    # Paramètres d'animation
+            label=str(2000 + i)                           # Libellé de l'étape du slider
+        )
+        step['args'][0]['visible'][i] = True             # Définir la trace actuelle comme visible
+        steps.append(step)
+
+    # Configuration du slider
+    sliders = [dict(
+        active=0,                                         # Étape initialement active
+        steps=steps,                                      # Étapes pour le slider
+        currentvalue={"prefix": "Année : ", "font": {"size": 14}},  # Affichage de la valeur actuelle
+    )]
+
+    # Mise à jour de la mise en page de la figure
+    fig.update_layout(
+        title_text=f'Carte {column_name} avec slider',   # Titre de la figure
+        title_font_size=24,                               # Taille de police du titre
+        title_x=0.5,                                      # Position du titre
+        geo=dict(
+            showframe=True,                               # Afficher le cadre autour de la carte
+            showcoastlines=True,                          # Afficher les côtes
+            projection_type='natural earth'               # Projection de la carte
+        ),
+        sliders=sliders,                                  # Ajouter le slider à la figure
+        height=500,                                       # Hauteur de la figure
+        width=1000,                                       # Largeur de la figure
+        font=dict(family='Arial', size=12),               # Paramètres de police
+        margin=dict(t=80, l=50, r=50, b=50),              # Marges
+    )
+
+    # Affichage de la figure
+    fig.show()
+
+# Exemple d'utilisation
+column_name = 'Accès à l'électricité (% de la population)'
+plot_world_map_with_slider(column_name)
+column_name = 'Part des énergies renouvelables dans la consommation finale d'énergie (%)'
+plot_world_map_with_slider(column_name)
+
+# Filtrage des données numériques
+numeric_data = df.select_dtypes(include='number')
+
+categorical_data = df.select_dtypes(exclude='number')
+
+# Description du jeu de données
+# La méthode describe() calcule des statistiques descriptives pour les colonnes numériques
+# La méthode transpose() transposera les statistiques descriptives pour avoir une colonne par variable
+df_info = df.describe().transpose()
+
+# Comptage des valeurs manquantes
+# La méthode isna() retourne une DataFrame de booléens indiquant si chaque valeur est manquante ou non
+# La méthode sum() est utilisée pour compter le nombre de True (valeurs manquantes) dans chaque colonne
+missing_values = df.isna().sum()
+
+# Création d'un heatmap
+# La fonction plt.figure() crée une nouvelle figure avec une taille spécifiée (largeur, hauteur)
+fig_missing_values = plt.figure(figsize=(10, 6))
+
+# Utilisation de seaborn pour tracer le heatmap
+# La fonction sns.heatmap() trace un heatmap basé sur les données fournies (missing_values.to_frame())
+# cmap='Blues' définit la palette de couleurs à utiliser
+# annot=True affiche les valeurs à l'intérieur de chaque cellule du heatmap
+# fmt='d' formate les valeurs comme des entiers
+# cbar=False désactive la barre de couleur sur le côté
+sns.heatmap(missing_values.to_frame(), cmap='Blues', annot=True, fmt='d', cbar=False)
+
+# Personnalisation du graphique
+# plt.title() définit le titre du graphique
+plt.title('Nombre de valeurs manquantes dans chaque colonne')
+
+# plt.xlabel() définit le label de l'axe des abscisses
+plt.xlabel('Colonnes')
+
+# plt.ylabel() définit le label de l'axe des ordonnées
+plt.ylabel('')
+
+# Affichage du graphique
+plt.show()
+# Suppression des colonnes avec un grand nombre de valeurs manquantes
+# La méthode drop(columns=[]) est utilisée pour supprimer les colonnes spécifiées de DataFrame
+# 'inplace=True' modifie le DataFrame original sans créer de copie
+df.drop(columns=['Financial flows to developing countries (US $)', 
+                 'Renewables (% equivalent primary energy)',
+                 'Renewable-electricity-generating-capacity-per-capita'], inplace=True)
+
+# Remplissage des valeurs manquantes avec la moyenne
+# La liste 'columns_to_fill_mean' contient les noms des colonnes où les valeurs manquantes doivent être remplacées par la moyenne
+columns_to_fill_mean = ['Access to clean fuels for cooking', 
+                        'Renewable energy share in the total final energy consumption (%)',
+                        'Electricity from nuclear (TWh)', 
+                        'Energy intensity level of primary energy (MJ/$2017 PPP GDP)',
+                        'Value_co2_emissions_kt_by_country', 
+                        'gdp_growth', 
+                        'gdp_per_capita']
+
+# Utilisation de la méthode apply() pour appliquer une fonction à chaque colonne spécifiée
+# La fonction lambda x: x.fillna(x.mean()) remplace les valeurs manquantes de chaque colonne par sa moyenne
+df[columns_to_fill_mean] = df[columns_to_fill_mean].apply(lambda x: x.fillna(x.mean()))
+
+# Suppression des lignes restantes avec des valeurs manquantes
+# La méthode dropna() est utilisée pour supprimer les lignes contenant des valeurs manquantes
+# 'df = df.dropna()' assigne le DataFrame modifié à la variable df, remplaçant ainsi l'ancien DataFrame
+df = df.dropna()
+# Sélection des colonnes numériques
+# La méthode select_dtypes() est utilisée pour sélectionner uniquement les colonnes numériques du DataFrame
+# Les types de données 'float64' et 'int64' sont spécifiés pour inclure à la fois les flottants et les entiers
+numeric_df = df.select_dtypes(include=['float64', 'int64'])
+
+# Calcul de la matrice de corrélation
+# La méthode corr() calcule la corrélation entre les colonnes numériques
+correlation_matrix = numeric_df.corr()
+
+# Affichage de la matrice de corrélation
+# La fonction print() affiche la matrice de corrélation dans la console
+print(correlation_matrix)
+
+# Sélection des colonnes numériques
+# La méthode select_dtypes() est utilisée pour sélectionner uniquement les colonnes numériques du DataFrame
+# Les types de données 'float64' et 'int64' sont spécifiés pour inclure à la fois les flottants et les entiers
+numeric_df = df.select_dtypes(include=['float64', 'int64'])
+
+# Calcul de la matrice de corrélation
+# La méthode corr() calcule la corrélation entre les colonnes numériques
+correlation_matrix = numeric_df.corr()
+
+# Affichage de la matrice de corrélation
+# La fonction print() affiche la matrice de corrélation dans la console
+print(correlation_matrix)
+
+# La méthode .isna() renvoie une DataFrame de même forme que le DataFrame original, mais avec des valeurs booléennes (True pour les valeurs manquantes et False pour les valeurs non manquantes).
+# Ensuite, .sum() est utilisé pour additionner les valeurs True dans chaque colonne, car en Python, True est équivalent à 1 et False est équivalent à 0. 
+# Ainsi, en additionnant les valeurs booléennes, nous obtenons le nombre total de valeurs manquantes dans chaque colonne.
+missing_values = df.isna().sum()
+
+
